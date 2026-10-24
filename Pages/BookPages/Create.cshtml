@@ -13,7 +13,7 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="Book.Title" class="control-label"></label>
                 <input asp-for="Book.Title" class="form-control" />
                 <span asp-validation-for="Book.Title" class="text-danger"></span>
@@ -23,21 +23,45 @@
                 <select asp-for="Book.AuthorID" class="form-control" asp-items="ViewBag.AuthorID"></select>
                 <span asp-validation-for="Book.AuthorID" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="Book.Price" class="control-label"></label>
                 <input asp-for="Book.Price" class="form-control" />
                 <span asp-validation-for="Book.Price" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="Book.PublishingDate" class="control-label"></label>
                 <input asp-for="Book.PublishingDate" class="form-control" />
-                <span asp-validation-for="Book.PublishingDate" class="textdanger"></span>
+                <span asp-validation-for="Book.PublishingDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="Book.PublisherID" class="control-label">Publisher Name</label>
-                <select asp-for="Book.PublisherID" class="form-control" asp-items="ViewBag.PublisherID">
-            </select>
+                <select asp-for="Book.PublisherID" class="form-control" asp-items="ViewBag.PublisherID"></select>
                 <span asp-validation-for="Book.PublisherID" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <div class="table">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+                                foreach (var cat in Model.AssignedCategoryDataList)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                        @:</tr><tr>
+                                    }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedCategories"
+                                               value="@cat.CategoryID"
+                                               @(Html.Raw(cat.Assigned ? "checked=\"checked\"" : "")) />
+                                        @cat.CategoryID @: @cat.Name
+                                    @:</td>
+                                }
+                                @:</tr>
+                            }
+                    </table>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

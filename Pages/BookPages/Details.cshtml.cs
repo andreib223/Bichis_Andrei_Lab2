@@ -8,6 +8,7 @@ namespace Bichis_Andrei_Lab2.Pages.BookPages;
 public class DetailsModel : PageModel
 {
     private readonly Bichis_Andrei_Lab2Context _context;
+
     public DetailsModel(Bichis_Andrei_Lab2Context context)
     {
         _context = context;
@@ -22,16 +23,19 @@ public class DetailsModel : PageModel
             return NotFound();
         }
 
-        var book = await _context.Book.FirstOrDefaultAsync(m => m.ID == id);
+        var book = await _context.Book
+            .Include(b => b.Publisher)
+            .Include(b => b.Author)
+            .Include(b => b.BookCategories)
+                .ThenInclude(b => b.Category)
+            .FirstOrDefaultAsync(m => m.ID == id);
+
         if (book is null)
         {
             return NotFound();
         }
-        else
-        {
-            Book = book;
-        }
 
+        Book = book;
         return Page();
     }
 }

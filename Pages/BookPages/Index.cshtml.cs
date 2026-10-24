@@ -1,5 +1,4 @@
 using Bichis_Andrei_Lab2.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,14 +15,23 @@ public class IndexModel : PageModel
     }
 
     public IList<Book> Book { get; set; } = default!;
+    public BookData BookD { get; set; } = default!;
+    public int BookID { get; set; }
+    public int CategoryID { get; set; }
 
-    public async Task OnGetAsync(int? authorID)
+    public async Task OnGetAsync(int? id, int? categoryID, int? authorID)
     {
+        BookD = new BookData();
+
         ViewData["AuthorID"] = new SelectList(_context.Set<Author>(), "ID", "FullName");
 
         var booksQuery = _context.Book
             .Include(b => b.Publisher)
             .Include(b => b.Author)
+            .Include(b => b.BookCategories)
+                .ThenInclude(b => b.Category)
+            .AsNoTracking()
+            .OrderBy(b => b.Title)
             .AsQueryable();
 
         if (authorID.HasValue)
@@ -31,6 +39,14 @@ public class IndexModel : PageModel
             booksQuery = booksQuery.Where(b => b.AuthorID == authorID.Value);
         }
 
-        Book = await booksQuery.ToListAsync();
+        BookD.Books = await booksQuery.ToListAsync();
+
+        if (id != null)
+        {
+            BookID = id.Value;
+            Book book = BookD.Books
+                .Single(i => i.ID == id.Value);
+            BookD.Categories = book.BookCategories.Select(s => s.Category!);
+        }
     }
 }

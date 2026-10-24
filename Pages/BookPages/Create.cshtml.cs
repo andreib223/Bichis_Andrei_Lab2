@@ -1,12 +1,11 @@
 using Bichis_Andrei_Lab2.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bichis_Andrei_Lab2.Pages.BookPages;
 
-public class CreateModel : PageModel
+public class CreateModel : BookCategoriesPageModel
 {
     private readonly Bichis_Andrei_Lab2Context _context;
 
@@ -17,22 +16,43 @@ public class CreateModel : PageModel
 
     public IActionResult OnGet()
     {
-        ViewData["PublisherID"] = new SelectList(_context.Set<Publisher>(), "ID", "PublisherName");
-        ViewData["AuthorID"] = new SelectList(_context.Set<Author>(), "ID", "FullName");
+        var authorList = _context.Author.Select(x => new
+        {
+            x.ID,
+            FullName = x.LastName + " " + x.FirstName
+        });
+
+        ViewData["AuthorID"] = new SelectList(authorList, "ID", "FullName");
+        ViewData["PublisherID"] = new SelectList(_context.Publisher, "ID", "PublisherName");
+
+        var book = new Book();
+        book.BookCategories = new List<BookCategory>();
+        PopulateAssignedCategoryData(_context, book);
+
         return Page();
     }
 
     [BindProperty]
     public Book Book { get; set; } = default!;
 
-    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD.
-    public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostAsync(string[]? selectedCategories)
     {
-        if (!ModelState.IsValid)
+        var newBook = new Book();
+
+        if (selectedCategories != null)
         {
-            return Page();
+            newBook.BookCategories = new List<BookCategory>();
+            foreach (var cat in selectedCategories)
+            {
+                var catToAdd = new BookCategory
+                {
+                    CategoryID = int.Parse(cat)
+                };
+                newBook.BookCategories.Add(catToAdd);
+            }
         }
 
+        Book.BookCategories = newBook.BookCategories;
         _context.Book.Add(Book);
         await _context.SaveChangesAsync();
 
