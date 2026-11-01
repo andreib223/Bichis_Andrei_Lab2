@@ -11,15 +11,14 @@
     <a asp-page="Create">Create New</a>
 </p>
 
-<form method="get">
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <label class="form-label">Select Author:</label>
-            <select name="AuthorID" class="form-control" asp-items="ViewBag.AuthorID"></select>
-        </div>
-        <div class="col-md-2 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary">Filter</button>
-        </div>
+<form asp-page="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by Book Title / Author Name:
+            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-page="./Index">Back to full List</a>
+        </p>
     </div>
 </form>
 
@@ -27,10 +26,14 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Book[0].Title)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.TitleSort">
+                    @Html.DisplayNameFor(model => model.Book[0].Title)
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Book[0].Author)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.AuthorSort">
+                    @Html.DisplayNameFor(model => model.Book[0].Author)
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Book[0].Price)
