@@ -7,4 +7,6 @@ public class Bichis_Andrei_Lab2Context(DbContextOptions<Bichis_Andrei_Lab2Contex
     public DbSet<Bichis_Andrei_Lab2.Models.Author> Author { get; set; } = default!;
     public DbSet<Bichis_Andrei_Lab2.Models.Category> Category { get; set; } = default!;
     public DbSet<Bichis_Andrei_Lab2.Models.BookCategory> BookCategory { get; set; } = default!;
+    public DbSet<Bichis_Andrei_Lab2.Models.Member> Member { get; set; } = default!;
+    public DbSet<Bichis_Andrei_Lab2.Models.Borrowing> Borrowing { get; set; } = default!;
 }
