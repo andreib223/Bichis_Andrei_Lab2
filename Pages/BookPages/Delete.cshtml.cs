@@ -1,10 +1,12 @@
+using Bichis_Andrei_Lab2.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Bichis_Andrei_Lab2.Models;
 
 namespace Bichis_Andrei_Lab2.Pages.BookPages;
 
+[Authorize(Roles = "Admin")]
 public class DeleteModel : PageModel
 {
     private readonly Bichis_Andrei_Lab2Context _context;
